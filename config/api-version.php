@@ -60,4 +60,17 @@ return [
 
     'accept_header_pattern' => '/application\/vnd\.\w+\+v(\d+(\.\d+)*)\+json/',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Root Namespace for Controllers
+    |--------------------------------------------------------------------------
+    |
+    | Define the root namespace for versioned controllers. The default is
+    | 'App\Http\Controllers\Api', but you can customize this to point
+    | to any other namespace as needed.
+    |
+    */
+
+    'root_namespace' => 'App\Http\Controllers\Api', // Default root namespace
+
 ];
