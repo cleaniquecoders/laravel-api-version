@@ -18,19 +18,23 @@ You can publish the config file with:
 php artisan vendor:publish --tag="laravel-api-version-config"
 ```
 
+Here’s the updated **Usage** section for your `README.md`, reflecting the ability to explicitly set API versions for routes and using the `api.version` middleware.
+
+---
+
 ## Usage
 
 ### Configuration
 
-To start, publish the configuration file:
+Publish the configuration file:
 
 ```bash
 php artisan vendor:publish --tag="laravel-api-version-config"
 ```
 
-This will create a `config/api-version.php` file. Here, you can customize options like the default version, custom headers, version format, and the root namespace for versioned controllers.
+This creates a `config/api-version.php` file where you can customize options like the default version, custom headers, version format, and the root namespace for versioned controllers.
 
-Example of the configuration file:
+Sample configuration:
 
 ```php
 return [
@@ -44,19 +48,13 @@ return [
 
 ### Middleware Setup
 
-Add the `ApiVersion` middleware to the `$routeMiddleware` array in `app/Http/Kernel.php`:
-
-```php
-protected $routeMiddleware = [
-    'api.version' => \CleaniqueCoders\LaravelApiVersion\Http\Middleware\ApiVersion::class,
-];
-```
-
-Now, you can apply the `api.version` middleware to your routes.
+Ensure the `api.version` middleware is registered by default when the package is loaded. This middleware automatically detects API versions based on headers or explicitly defined versions.
 
 ### Defining Versioned Routes
 
-In your `routes/api.php`, use the `api.version` middleware on routes that should be versioned. The middleware will dynamically map requests to the correct controller namespace based on the version detected in the headers.
+#### Option 1: Header-Based Version Detection
+
+In your `routes/api.php`, use the `api.version` middleware to enable automatic version detection from headers:
 
 ```php
 use Illuminate\Support\Facades\Route;
@@ -67,11 +65,34 @@ Route::middleware(['api', 'api.version'])->group(function () {
 });
 ```
 
-With this setup, requests will automatically route to controllers within the appropriate versioned namespace, such as `App\Http\Controllers\Api\V1\ExampleController` for `v1` or `App\Http\Controllers\Api\V2\ExampleController` for `v2`.
+With this setup, the middleware will look for version information in the `Accept` or `X-API-Version` headers and dynamically route requests to the correct versioned namespace.
 
-### Example Request
+#### Option 2: Explicitly Setting the Version
 
-Using the `Accept` header:
+You can explicitly specify the version for a route or route group by passing the version as a parameter to the middleware. This method overrides any version information in headers.
+
+```php
+use Illuminate\Support\Facades\Route;
+
+Route::middleware(['api', 'api.version:v1'])->group(function () {
+    Route::get('/example', 'ExampleController@index');
+    // Additional routes for v1
+});
+
+Route::middleware(['api', 'api.version:v2'])->group(function () {
+    Route::get('/example', 'ExampleController@index');
+    // Additional routes for v2
+});
+```
+
+In this example:
+
+- The `api.version:v1` middleware directs all routes within the group to the `v1` namespace.
+- Similarly, `api.version:v2` directs routes to the `v2` namespace, bypassing any header detection.
+
+### Example Requests
+
+**Using `Accept` Header**:
 
 ```bash
 curl -L \
@@ -79,7 +100,7 @@ curl -L \
   https://yourapp/api/example
 ```
 
-Using the custom header (`X-API-Version`):
+**Using Custom Header (`X-API-Version`)**:
 
 ```bash
 curl -L \
@@ -87,7 +108,13 @@ curl -L \
   https://yourapp/api/example
 ```
 
-This will route requests to the correct versioned controller (`V2\ExampleController`) as specified by the headers.
+**Explicitly Versioned Route**:
+
+If you specify `api.version:v2` in the route definition, no header is needed to access version 2, as the route explicitly defines it.
+
+---
+
+This setup provides flexibility, allowing you to choose between header-based detection and explicit versioning based on your API design needs.
 
 ## Testing
 
