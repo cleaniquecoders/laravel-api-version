@@ -4,6 +4,7 @@ namespace CleaniqueCoders\LaravelApiVersion;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use CleaniqueCoders\LaravelApiVersion\Http\Middleware\ApiVersion;
 
 class LaravelApiVersionServiceProvider extends PackageServiceProvider
 {
@@ -17,5 +18,11 @@ class LaravelApiVersionServiceProvider extends PackageServiceProvider
         $package
             ->name('laravel-api-version')
             ->hasConfigFile();
+    }
+
+    public function bootingPackage()
+    {
+        // Register the api.version middleware alias
+        $this->app['router']->aliasMiddleware('api.version', ApiVersion::class);
     }
 }
