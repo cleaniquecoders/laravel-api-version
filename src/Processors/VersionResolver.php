@@ -9,9 +9,6 @@ class VersionResolver
 {
     /**
      * Resolve the API version based on headers and config.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return string
      */
     public static function resolve(Request $request): string
     {
@@ -31,14 +28,14 @@ class VersionResolver
         if ($useAcceptHeader && $request->hasHeader('Accept')) {
             $acceptHeader = $request->header('Accept', '');
             if (is_string($acceptHeader) && preg_match($acceptHeaderPattern, $acceptHeader, $matches)) {
-                $version = 'v' . ($matches[1] ?? ''); // Ensure matches[1] exists
+                $version = 'v'.($matches[1] ?? ''); // Ensure matches[1] exists
             }
         }
 
         // Fallback to custom header if version is still default
         if ($version === $defaultVersion && $request->hasHeader($customHeader)) {
             $headerVersion = $request->header($customHeader, '');
-            $version = 'v' . $headerVersion; // $headerVersion is guaranteed to be a string
+            $version = 'v'.$headerVersion; // $headerVersion is guaranteed to be a string
         }
 
         return $version;
