@@ -18,23 +18,13 @@ You can publish the config file with:
 php artisan vendor:publish --tag="laravel-api-version-config"
 ```
 
-Here’s the updated **Usage** section for your `README.md`, reflecting the ability to explicitly set API versions for routes and using the `api.version` middleware.
-
----
-
 ## Usage
 
 ### Configuration
 
-Publish the configuration file:
+This will create a `config/api-version.php` file where you can customize options like the default version, headers, version format, and the root namespace for versioned controllers.
 
-```bash
-php artisan vendor:publish --tag="laravel-api-version-config"
-```
-
-This creates a `config/api-version.php` file where you can customize options like the default version, custom headers, version format, and the root namespace for versioned controllers.
-
-Sample configuration:
+Example configuration:
 
 ```php
 return [
@@ -48,75 +38,69 @@ return [
 
 ### Middleware Setup
 
-Ensure the `api.version` middleware is registered by default when the package is loaded. This middleware automatically detects API versions based on headers or explicitly defined versions.
+The `api.version` middleware is registered automatically. This middleware allows for automatic version detection based on headers or explicit version specification in the route.
 
 ### Defining Versioned Routes
 
 #### Option 1: Header-Based Version Detection
 
-In your `routes/api.php`, use the `api.version` middleware to enable automatic version detection from headers:
+To enable automatic version detection from headers, use the `api.version` middleware in your `routes/api.php`:
 
 ```php
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['api', 'api.version'])->group(function () {
     Route::get('/example', 'ExampleController@index');
-    // Define additional routes here
+    // Additional routes here
 });
 ```
 
-With this setup, the middleware will look for version information in the `Accept` or `X-API-Version` headers and dynamically route requests to the correct versioned namespace.
+This setup detects versions from the `Accept` or `X-API-Version` headers, dynamically routing requests to the correct versioned namespace.
 
 #### Option 2: Explicitly Setting the Version
 
-You can explicitly specify the version for a route or route group by passing the version as a parameter to the middleware. This method overrides any version information in headers.
+You can explicitly define a version for a route or route group by passing the version to the middleware. This approach bypasses header detection.
 
 ```php
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['api', 'api.version:v1'])->group(function () {
     Route::get('/example', 'ExampleController@index');
-    // Additional routes for v1
+    // Routes for v1
 });
 
 Route::middleware(['api', 'api.version:v2'])->group(function () {
     Route::get('/example', 'ExampleController@index');
-    // Additional routes for v2
+    // Routes for v2
 });
 ```
 
 In this example:
 
-- The `api.version:v1` middleware directs all routes within the group to the `v1` namespace.
-- Similarly, `api.version:v2` directs routes to the `v2` namespace, bypassing any header detection.
+- `api.version:v1` directs routes in the group to the `v1` namespace.
+- `api.version:v2` directs routes to the `v2` namespace, ignoring headers.
 
 ### Example Requests
 
-**Using `Accept` Header**:
+#### Using `Accept` Header
 
 ```bash
-curl -L \
-  -H "Accept: application/vnd.yourapp+v2+json" \
-  https://yourapp/api/example
+curl -L -H "Accept: application/vnd.yourapp+v2+json" https://yourapp/api/example
 ```
 
-**Using Custom Header (`X-API-Version`)**:
+#### Using Custom Header (`X-API-Version`)
 
 ```bash
-curl -L \
-  -H "X-API-Version: 2" \
-  https://yourapp/api/example
+curl -L -H "X-API-Version: 2" https://yourapp/api/example
 ```
 
-**Explicitly Versioned Route**:
+#### Explicitly Versioned Route
 
-If you specify `api.version:v2` in the route definition, no header is needed to access version 2, as the route explicitly defines it.
-
----
-
-This setup provides flexibility, allowing you to choose between header-based detection and explicit versioning based on your API design needs.
+If the route is explicitly defined as `api.version:v2`, no header is needed to access version 2.
 
 ## Testing
+
+Run the package tests:
 
 ```bash
 composer test
@@ -124,15 +108,15 @@ composer test
 
 ## Changelog
 
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+Please see [CHANGELOG](CHANGELOG.md) for details on recent updates.
 
 ## Contributing
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+Please see [CONTRIBUTING](CONTRIBUTING.md) for contribution guidelines.
 
 ## Security Vulnerabilities
 
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
+Please review our [security policy](../../security/policy) for reporting security issues.
 
 ## Credits
 
@@ -141,4 +125,4 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+The MIT License (MIT). See the [License File](LICENSE.md) for details.
