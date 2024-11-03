@@ -2,9 +2,9 @@
 
 namespace CleaniqueCoders\LaravelApiVersion;
 
+use CleaniqueCoders\LaravelApiVersion\Commands\LaravelApiVersionCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use CleaniqueCoders\LaravelApiVersion\Commands\LaravelApiVersionCommand;
 
 class LaravelApiVersionServiceProvider extends PackageServiceProvider
 {
