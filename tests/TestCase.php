@@ -2,9 +2,9 @@
 
 namespace CleaniqueCoders\LaravelApiVersion\Tests;
 
+use CleaniqueCoders\LaravelApiVersion\LaravelApiVersionServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use CleaniqueCoders\LaravelApiVersion\LaravelApiVersionServiceProvider;
 
 class TestCase extends Orchestra
 {

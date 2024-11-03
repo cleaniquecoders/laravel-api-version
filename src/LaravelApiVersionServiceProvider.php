@@ -4,7 +4,6 @@ namespace CleaniqueCoders\LaravelApiVersion;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use CleaniqueCoders\LaravelApiVersion\Commands\LaravelApiVersionCommand;
 
 class LaravelApiVersionServiceProvider extends PackageServiceProvider
 {
@@ -17,9 +16,6 @@ class LaravelApiVersionServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('laravel-api-version')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_laravel_api_version_table')
-            ->hasCommand(LaravelApiVersionCommand::class);
+            ->hasConfigFile();
     }
 }
