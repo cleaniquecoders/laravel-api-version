@@ -25,18 +25,21 @@ jobs:
             pest: ^4.0
             pest-plugin-arch: ^4.0
             pest-plugin-laravel: ^4.0
+            larastan: ^3.0
           - laravel: 11.*
             testbench: 9.*
             carbon: ^2.63
             pest: ^2.34
             pest-plugin-arch: ^2.7
             pest-plugin-laravel: ^2.3
+            larastan: ^2.9
           - laravel: 10.*
             testbench: 8.*
             carbon: ^2.63
             pest: ^2.34
             pest-plugin-arch: ^2.7
             pest-plugin-laravel: ^2.3
+            larastan: ^2.9
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ubuntu-latest
 
@@ -58,7 +61,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nesbot/carbon:${{ matrix.carbon }}" "pestphp/pest:${{ matrix.pest }}" "pestphp/pest-plugin-arch:${{ matrix.pest-plugin-arch }}" "pestphp/pest-plugin-laravel:${{ matrix.pest-plugin-laravel }}" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nesbot/carbon:${{ matrix.carbon }}" "pestphp/pest:${{ matrix.pest }}" "pestphp/pest-plugin-arch:${{ matrix.pest-plugin-arch }}" "pestphp/pest-plugin-laravel:${{ matrix.pest-plugin-laravel }}" "larastan/larastan:${{ matrix.larastan }}" --no-interaction --no-update
           composer update --prefer-stable --prefer-dist --no-interaction
 
       - name: List Installed Dependencies
