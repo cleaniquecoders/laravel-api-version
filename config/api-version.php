@@ -73,4 +73,38 @@ return [
 
     'root_namespace' => 'App\Http\Controllers\Api', // Default root namespace
 
+    /*
+    |--------------------------------------------------------------------------
+    | Supported API Versions
+    |--------------------------------------------------------------------------
+    |
+    | Define which API versions are supported by your application. If this
+    | array is empty, all versions will be accepted. If populated, only
+    | the listed versions will be allowed.
+    |
+    */
+
+    'supported_versions' => [
+        // 'v1', 'v2', 'v3'
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Deprecated API Versions
+    |--------------------------------------------------------------------------
+    |
+    | Define which API versions are deprecated, including sunset dates and
+    | replacement versions. This will add appropriate headers to responses
+    | when deprecated versions are used.
+    |
+    */
+
+    'deprecated_versions' => [
+        // 'v1' => [
+        //     'sunset_date' => '2024-12-31',
+        //     'replacement' => 'v2',
+        //     'message' => 'API v1 is deprecated. Please migrate to v2.',
+        // ],
+    ],
+
 ];
