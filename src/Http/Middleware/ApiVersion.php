@@ -34,7 +34,7 @@ class ApiVersion
             $response = $next($request);
 
             // Add version header to response
-            if (method_exists($response, 'header')) {
+            if ($response instanceof \Illuminate\Http\Response || $response instanceof \Illuminate\Http\JsonResponse) {
                 $response->header('X-API-Version', $version);
 
                 // Add deprecation headers if the version is deprecated

@@ -10,6 +10,8 @@ class VersionResolver
 {
     /**
      * Cached configuration values to avoid repeated config() calls.
+     *
+     * @var array<string, mixed>|null
      */
     protected static ?array $cachedConfig = null;
 
@@ -30,7 +32,7 @@ class VersionResolver
         // Try custom header first (more explicit than Accept header)
         if ($request->hasHeader($config['custom_header'])) {
             $headerVersion = $request->header($config['custom_header'], '');
-            if ($headerVersion) {
+            if (is_string($headerVersion) && $headerVersion !== '') {
                 $version = self::normalizeVersion($headerVersion);
 
                 return self::validateVersion($version);
@@ -52,6 +54,8 @@ class VersionResolver
 
     /**
      * Get cached configuration or load it.
+     *
+     * @return array<string, mixed>
      */
     protected static function getConfig(): array
     {
@@ -95,6 +99,7 @@ class VersionResolver
         }
 
         // Check if version is in supported versions list (if configured)
+        /** @var array<string> $supportedVersions */
         $supportedVersions = Config::get('api-version.supported_versions', []);
         if (! empty($supportedVersions) && ! in_array($normalizedVersion, $supportedVersions)) {
             throw InvalidApiVersionException::unsupportedVersion($normalizedVersion, $supportedVersions);

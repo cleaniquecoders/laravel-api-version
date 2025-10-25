@@ -11,6 +11,7 @@ class DeprecationProcessor
      */
     public static function isDeprecated(string $version): bool
     {
+        /** @var array<string, array<string, mixed>> $deprecatedVersions */
         $deprecatedVersions = Config::get('api-version.deprecated_versions', []);
 
         return isset($deprecatedVersions[$version]);
@@ -18,9 +19,12 @@ class DeprecationProcessor
 
     /**
      * Get deprecation information for a version.
+     *
+     * @return array<string, mixed>|null
      */
     public static function getDeprecationInfo(string $version): ?array
     {
+        /** @var array<string, array<string, mixed>> $deprecatedVersions */
         $deprecatedVersions = Config::get('api-version.deprecated_versions', []);
 
         return $deprecatedVersions[$version] ?? null;
@@ -28,6 +32,8 @@ class DeprecationProcessor
 
     /**
      * Get deprecation headers for a deprecated version.
+     *
+     * @return array<string, string>
      */
     public static function getDeprecationHeaders(string $version): array
     {
@@ -69,6 +75,8 @@ class DeprecationProcessor
 
     /**
      * Validate deprecation configuration.
+     *
+     * @param  array<string, array<string, mixed>>  $deprecatedVersions
      */
     public static function validateDeprecationConfig(array $deprecatedVersions): void
     {

@@ -14,11 +14,13 @@ class ControllerResolver
     {
         // Use caching for performance if cache is available
         if (function_exists('cache')) {
-            return Cache::remember(
+            $namespace = Cache::remember(
                 "api_version_namespace_{$version}",
                 3600, // 1 hour
-                fn () => self::buildNamespace($version)
+                fn (): string => self::buildNamespace($version)
             );
+
+            return is_string($namespace) ? $namespace : self::buildNamespace($version);
         }
 
         return self::buildNamespace($version);

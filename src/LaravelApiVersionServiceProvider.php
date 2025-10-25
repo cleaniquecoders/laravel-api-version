@@ -42,6 +42,7 @@ class LaravelApiVersionServiceProvider extends PackageServiceProvider
      */
     protected function validateConfiguration(): void
     {
+        /** @var array<string, mixed> $config */
         $config = config('api-version', []);
 
         // Validate default_version
