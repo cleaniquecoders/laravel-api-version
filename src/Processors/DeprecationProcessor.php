@@ -70,13 +70,16 @@ class DeprecationProcessor
     {
         // For now, just return a placeholder URL
         // In a real application, this would build the actual API URL
-        return config('app.url', 'https://api.example.com').'/'.$replacementVersion;
+        $baseUrl = config('app.url', 'https://api.example.com');
+        $baseUrl = is_string($baseUrl) ? $baseUrl : 'https://api.example.com';
+
+        return $baseUrl.'/'.$replacementVersion;
     }
 
     /**
      * Validate deprecation configuration.
      *
-     * @param  array<string, array<string, mixed>>  $deprecatedVersions
+     * @param  array<mixed, mixed>  $deprecatedVersions
      */
     public static function validateDeprecationConfig(array $deprecatedVersions): void
     {

@@ -31,7 +31,7 @@ class VersionResolver
 
         // Try custom header first (more explicit than Accept header)
         $customHeader = $config['custom_header'];
-        if (is_string($customHeader) && $request->hasHeader($customHeader)) {
+        if (is_string($customHeader) && $customHeader !== '' && $request->hasHeader($customHeader)) {
             $headerVersion = $request->header($customHeader, '');
             if (is_string($headerVersion) && $headerVersion !== '') {
                 $version = self::normalizeVersion($headerVersion);
@@ -42,7 +42,7 @@ class VersionResolver
 
         // Fallback to Accept header if enabled
         $acceptHeaderPattern = $config['accept_header_pattern'];
-        if ($config['use_accept_header'] && is_string($acceptHeaderPattern) && $request->hasHeader('Accept')) {
+        if ($config['use_accept_header'] && is_string($acceptHeaderPattern) && $acceptHeaderPattern !== '' && $request->hasHeader('Accept')) {
             $acceptHeader = $request->header('Accept', '');
             if (is_string($acceptHeader) && preg_match($acceptHeaderPattern, $acceptHeader, $matches)) {
                 $version = 'v'.($matches[1] ?? '');
@@ -55,14 +55,14 @@ class VersionResolver
     }
 
     /**
-     * Get cached configuration or load it.
+     * Get cached configuration for version resolution.
      *
      * @return array<string, mixed>
      */
     protected static function getConfig(): array
     {
         if (self::$cachedConfig === null) {
-            self::$cachedConfig = [
+            $rawConfig = [
                 'default_version' => Config::get('api-version.default_version', 'v1'),
                 'use_accept_header' => Config::get('api-version.use_accept_header', true),
                 'custom_header' => Config::get('api-version.custom_header', 'X-API-Version'),
@@ -70,10 +70,24 @@ class VersionResolver
                 'supported_versions' => Config::get('api-version.supported_versions', []),
             ];
 
-            // Ensure all values are properly typed
-            self::$cachedConfig['default_version'] = is_string(self::$cachedConfig['default_version']) ? self::$cachedConfig['default_version'] : 'v1';
-            self::$cachedConfig['custom_header'] = is_string(self::$cachedConfig['custom_header']) ? self::$cachedConfig['custom_header'] : 'X-API-Version';
-            self::$cachedConfig['accept_header_pattern'] = is_string(self::$cachedConfig['accept_header_pattern']) ? self::$cachedConfig['accept_header_pattern'] : '/application\/vnd\.\w+\+v(\d+(\.\d+)*)\+json/';
+            // Build properly typed config array
+            $supportedVersions = $rawConfig['supported_versions'];
+            $filteredVersions = [];
+            if (is_array($supportedVersions)) {
+                foreach ($supportedVersions as $version) {
+                    if (is_string($version)) {
+                        $filteredVersions[] = $version;
+                    }
+                }
+            }
+
+            self::$cachedConfig = [
+                'default_version' => is_string($rawConfig['default_version']) ? $rawConfig['default_version'] : 'v1',
+                'use_accept_header' => is_bool($rawConfig['use_accept_header']) ? $rawConfig['use_accept_header'] : true,
+                'custom_header' => is_string($rawConfig['custom_header']) ? $rawConfig['custom_header'] : 'X-API-Version',
+                'accept_header_pattern' => is_string($rawConfig['accept_header_pattern']) ? $rawConfig['accept_header_pattern'] : '/application\/vnd\.\w+\+v(\d+(\.\d+)*)\+json/',
+                'supported_versions' => $filteredVersions,
+            ];
         }
 
         return self::$cachedConfig;
@@ -134,7 +148,7 @@ class VersionResolver
 
         // Check Accept header pattern for API version if enabled
         $acceptHeaderPattern = $config['accept_header_pattern'];
-        if ($config['use_accept_header'] && is_string($acceptHeaderPattern) && $request->hasHeader('Accept')) {
+        if ($config['use_accept_header'] && is_string($acceptHeaderPattern) && $acceptHeaderPattern !== '' && $request->hasHeader('Accept')) {
             $acceptHeader = $request->header('Accept', '');
             if (is_string($acceptHeader) && preg_match($acceptHeaderPattern, $acceptHeader)) {
                 return true;

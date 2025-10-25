@@ -95,8 +95,9 @@ class LaravelApiVersionServiceProvider extends PackageServiceProvider
 
         foreach ($supportedVersions as $version) {
             if (! is_string($version) || ! preg_match('/^v\d+(\.\d+)*$/', $version)) {
+                $versionString = is_string($version) ? $version : gettype($version);
                 throw new InvalidArgumentException(
-                    "Invalid version format in 'supported_versions': {$version}. Expected format: v1, v2, v1.1, etc."
+                    'Invalid version format in \'supported_versions\': '.$versionString.'. Expected format: v1, v2, v1.1, etc.'
                 );
             }
         }
@@ -116,6 +117,7 @@ class LaravelApiVersionServiceProvider extends PackageServiceProvider
             );
         }
 
+        /** @var array<string, array<string, mixed>> $deprecatedVersions */
         DeprecationProcessor::validateDeprecationConfig($deprecatedVersions);
     }
 }

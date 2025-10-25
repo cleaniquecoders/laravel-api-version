@@ -33,6 +33,11 @@ class ApiVersion
 
             $response = $next($request);
 
+            // Ensure we have a proper Response object
+            if (! $response instanceof Response) {
+                throw new \RuntimeException('Middleware must return a Response instance');
+            }
+
             // Add version header to response
             if ($response instanceof \Illuminate\Http\Response || $response instanceof \Illuminate\Http\JsonResponse) {
                 $response->header('X-API-Version', $version);
