@@ -46,17 +46,17 @@ class DeprecationProcessor
             'Deprecation' => 'true',
         ];
 
-        if (isset($info['sunset_date'])) {
+        if (isset($info['sunset_date']) && is_string($info['sunset_date'])) {
             $headers['Sunset'] = $info['sunset_date'];
         }
 
-        if (isset($info['replacement'])) {
+        if (isset($info['replacement']) && is_string($info['replacement'])) {
             $headers['Link'] = sprintf('<%s>; rel="successor-version"',
                 self::buildReplacementUrl($info['replacement'])
             );
         }
 
-        if (isset($info['message'])) {
+        if (isset($info['message']) && is_string($info['message'])) {
             $headers['X-API-Deprecation-Message'] = $info['message'];
         }
 

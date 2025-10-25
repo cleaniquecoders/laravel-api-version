@@ -30,8 +30,9 @@ class VersionResolver
         $version = $config['default_version'];
 
         // Try custom header first (more explicit than Accept header)
-        if ($request->hasHeader($config['custom_header'])) {
-            $headerVersion = $request->header($config['custom_header'], '');
+        $customHeader = $config['custom_header'];
+        if (is_string($customHeader) && $request->hasHeader($customHeader)) {
+            $headerVersion = $request->header($customHeader, '');
             if (is_string($headerVersion) && $headerVersion !== '') {
                 $version = self::normalizeVersion($headerVersion);
 
@@ -40,16 +41,17 @@ class VersionResolver
         }
 
         // Fallback to Accept header if enabled
-        if ($config['use_accept_header'] && $request->hasHeader('Accept')) {
+        $acceptHeaderPattern = $config['accept_header_pattern'];
+        if ($config['use_accept_header'] && is_string($acceptHeaderPattern) && $request->hasHeader('Accept')) {
             $acceptHeader = $request->header('Accept', '');
-            if (is_string($acceptHeader) && preg_match($config['accept_header_pattern'], $acceptHeader, $matches)) {
+            if (is_string($acceptHeader) && preg_match($acceptHeaderPattern, $acceptHeader, $matches)) {
                 $version = 'v'.($matches[1] ?? '');
 
                 return self::validateVersion($version);
             }
         }
 
-        return self::validateVersion($version);
+        return self::validateVersion(is_string($version) ? $version : 'v1');
     }
 
     /**
@@ -131,14 +133,17 @@ class VersionResolver
         $config = self::getConfig();
 
         // Check Accept header pattern for API version if enabled
-        if ($config['use_accept_header'] && $request->hasHeader('Accept')) {
+        $acceptHeaderPattern = $config['accept_header_pattern'];
+        if ($config['use_accept_header'] && is_string($acceptHeaderPattern) && $request->hasHeader('Accept')) {
             $acceptHeader = $request->header('Accept', '');
-            if (is_string($acceptHeader) && preg_match($config['accept_header_pattern'], $acceptHeader)) {
+            if (is_string($acceptHeader) && preg_match($acceptHeaderPattern, $acceptHeader)) {
                 return true;
             }
         }
 
         // Check for the presence of the custom API version header
-        return $request->hasHeader($config['custom_header']);
+        $customHeader = $config['custom_header'];
+
+        return is_string($customHeader) && $request->hasHeader($customHeader);
     }
 }

@@ -48,8 +48,9 @@ class LaravelApiVersionServiceProvider extends PackageServiceProvider
         // Validate default_version
         $defaultVersion = $config['default_version'] ?? 'v1';
         if (! is_string($defaultVersion) || ! preg_match('/^v\d+(\.\d+)*$/', $defaultVersion)) {
+            $defaultVersionDisplay = is_string($defaultVersion) ? $defaultVersion : gettype($defaultVersion);
             throw new InvalidArgumentException(
-                "Invalid 'default_version' in api-version config. Expected format: v1, v2, v1.1, etc. Got: {$defaultVersion}"
+                "Invalid 'default_version' in api-version config. Expected format: v1, v2, v1.1, etc. Got: {$defaultVersionDisplay}"
             );
         }
 
