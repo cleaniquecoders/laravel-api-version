@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-api-version` will be documented in this file.
 
+## Fix Version - 2025-10-25
+
+**Full Changelog**: https://github.com/cleaniquecoders/laravel-api-version/compare/1.1.0...1.1.1
+
 ## Added Laravel 12 and PHP 8.4 Support - 2025-05-01
 
 **Full Changelog**: https://github.com/cleaniquecoders/laravel-api-version/compare/v1.0.1...1.1.0
