@@ -28,9 +28,6 @@ class ApiVersion
             $namespace = ControllerResolver::resolveNamespace($version);
             $request->attributes->set('api_namespace', $namespace);
 
-            // Apply the dynamically resolved namespace
-            $this->applyNamespace($namespace, $request, $next);
-
             $response = $next($request);
 
             // Ensure we have a proper Response object
@@ -60,16 +57,4 @@ class ApiVersion
         }
     }
 
-    /**
-     * Apply the resolved namespace to the router group.
-     *
-     * @return void
-     */
-    protected function applyNamespace(string $namespace, Request $request, Closure $next)
-    {
-        // Dynamically modify the router group namespace
-        app()->make('router')->group(['namespace' => $namespace], function () use ($request, $next) {
-            return $next($request);
-        });
-    }
 }
