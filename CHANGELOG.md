@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-api-version` will be documented in this file.
 
+## 1.2.1 - 2026-03-09
+
+### Bug Fix
+
+- **Fixed double request execution in `ApiVersion` middleware** — The `applyNamespace()` method was invoking `$next($request)` inside a router group callback, and then `$next()` was called again immediately after, causing the request handler/controller to execute twice. Removed the redundant `applyNamespace()` method entirely.
+
+**Full Changelog**: https://github.com/cleaniquecoders/laravel-api-version/compare/1.2.0...1.2.1
+
 ## Fix Version - 2025-10-25
 
 **Full Changelog**: https://github.com/cleaniquecoders/laravel-api-version/compare/1.1.0...1.1.1
